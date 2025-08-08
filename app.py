@@ -1,20 +1,27 @@
 from flask import Flask, jsonify
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from models import Base, Judet
+import os
 
 app = Flask(__name__)
 
-judete = [
-    "Alba", "Arad", "Argeș", "Bacău", "Bihor", "Bistrița-Năsăud", "Botoșani",
-    "Brăila", "Brașov", "București", "Buzău", "Călărași", "Caraș-Severin",
-    "Cluj", "Constanța", "Covasna", "Dâmbovița", "Dolj", "Galați", "Giurgiu",
-    "Gorj", "Harghita", "Hunedoara", "Ialomița", "Iași", "Ilfov", "Maramureș",
-    "Mehedinți", "Mureș", "Neamț", "Olt", "Prahova", "Satu Mare", "Sălaj",
-    "Sibiu", "Suceava", "Teleorman", "Timiș", "Tulcea", "Vâlcea", "Vaslui",
-    "Vrancea"
-]
+# URL-ul bazei de date (înlocuiește cu ce-ți dă Render)
+DATABASE_URL = os.environ.get("DATABASE_URL", "postgresql://schoolapi:SreJ22Sc7uVWu4G1hCBMt40lFVNAAtvH@dpg-d27rqveuk2gs73ejb530-a/schoolapi_738o")
 
-@app.route('/judete', methods=['GET'])
+
+
+# Setup SQLAlchemy
+engine = create_engine(DATABASE_URL)
+Session = sessionmaker(bind=engine)
+
+@app.route("/judete", methods=["GET"])
 def get_judete():
-    return jsonify(judete)
+    session = Session()
+    judete = session.query(Judet).all()
+    session.close()
 
-if __name__ == '__main__':
-    app.run(debug=True)
+    return jsonify({"judete": [j.nume for j in judete]})
+
+if __name__ == "__main__":
+    app.run()
