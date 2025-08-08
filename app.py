@@ -7,7 +7,8 @@ import os
 app = Flask(__name__)
 
 # URL-ul bazei de date (înlocuiește cu ce-ți dă Render)
-DATABASE_URL = os.environ.get("DATABASE_URL", "postgresql://schoolapi:SreJ22Sc7uVWu4G1hCBMt40lFVNAAtvH@dpg-d27rqveuk2gs73ejb530-a/schoolapi_738o")
+DATABASE_URL = os.environ.get("DATABASE_URL")
+# DATABASE_URL = os.environ.get("DATABASE_URL", "postgresql://schoolapi:SreJ22Sc7uVWu4G1hCBMt40lFVNAAtvH@dpg-d27rqveuk2gs73ejb530-a/schoolapi_738o")
 
 
 
