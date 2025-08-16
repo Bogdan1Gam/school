@@ -16,7 +16,7 @@ DATABASE_URL = os.environ.get("DATABASE_URL")
 engine = create_engine(DATABASE_URL)
 Session = sessionmaker(bind=engine)
 
-@app.route("/judete", methods=["GET"])
+@app.route("/judeteromania", methods=["GET"])
 def get_judete():
     session = Session()
     judete = session.query(Judet).all()
