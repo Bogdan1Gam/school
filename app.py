@@ -158,6 +158,9 @@ def me():
 @app.route("/judete", methods=["GET"])
 def get_judete():
     with Session() as db:
+        user = current_user(db)
+        if not user:
+            return jsonify({"message": "neautentificat"}), 401  # acces interzis
         judete = db.query(Judet).all()
         return jsonify({"judete": [j.nume for j in judete]})
 
