@@ -155,7 +155,7 @@ def me():
             }
         })
 
-@app.route("/judetee", methods=["GET"])
+@app.route("/judete", methods=["GET"])
 def get_judete():
     with Session() as db:
         judete = db.query(Judet).all()
