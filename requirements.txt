@@ -1,6 +1,7 @@
-Flask
-gunicorn
-psycopg2-binary
-SQLAlchemy
-PyJWT
-itsdangerous
+fastapi==0.112.0
+uvicorn==0.23.2
+SQLAlchemy==2.0.22
+psycopg2-binary==2.9.7
+python-jose==3.3.0
+passlib==1.7.4
+email-validator==2.2.1
