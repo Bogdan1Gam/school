@@ -19,11 +19,13 @@ def get_db():
     finally:
         db.close()
 
-def get_current_user(token: str = Header(None), db: Session = Depends(get_db)):
-    if not token:
+def get_current_user(authorization: str = Header(None), db: Session = Depends(get_db)):
+    if not authorization:
         raise HTTPException(status_code=401, detail="Token lipsă")
-    if token.startswith("Bearer "):
-        token = token.split(" ", 1)[1]
+    if authorization.startswith("Bearer "):
+        token = authorization.split(" ", 1)[1]
+    else:
+        token = authorization
     data = decode_jwt(token)
     if not data:
         raise HTTPException(status_code=401, detail="Token invalid sau expirat")
