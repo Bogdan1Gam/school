@@ -1,5 +1,5 @@
 # DATABASE_URL = os.environ.get("DATABASE_URL", "postgresql://schoolapi:SreJ22Sc7uVWu4G1hCBMt40lFVNAAtvH@dpg-d27rqveuk2gs73ejb530-a/schoolapi_738o")
-from fastapi import FastAPI, Depends, HTTPException, Header
+from fastapi import FastAPI, Depends, HTTPException, Header, Request
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from database import SessionLocal, engine, Base
@@ -34,7 +34,7 @@ def get_current_user(token: str = Header(None), db: Session = Depends(get_db)):
 
 # ---------------- Routes ----------------
 @app.post("/register")
-def register(user: UserCreate, db: Session = Depends(get_db)):
+def register(user: UserCreate, request: Request, db: Session = Depends(get_db)):
     if db.query(User).filter(User.username == user.username).first():
         raise HTTPException(status_code=409, detail="Username deja folosit")
     if db.query(User).filter(User.email == user.email).first():
@@ -49,7 +49,7 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
     db.refresh(new_user)
 
     token = create_jwt({"email": new_user.email}, expires_in=3600)
-    confirm_url = f"{str('http://school-16ub.onrender.com')}/confirm/{token}"
+    confirm_url = f"{request.base_url}confirm/{token}"  # URL dinamic
     send_email(new_user.email, "Confirmă contul", f"<p>Salut {user.username}</p><a href='{confirm_url}'>Confirmă</a>")
 
     return JSONResponse({"message": "Înregistrat. Verifică emailul pentru confirmare"}, status_code=201)
