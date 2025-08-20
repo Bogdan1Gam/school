@@ -28,7 +28,7 @@ def get_current_user(authorization: str = Header(None), db: Session = Depends(ge
         token = authorization
     data = decode_jwt(token)
     if not data:
-        raise HTTPException(status_code=401, detail="Token invalid sau expirat")
+        raise HTTPException(status_code=401, detail="Token invalid / expirat")
     user = db.get(User, data.get("user_id"))
     if not user:
         raise HTTPException(status_code=404, detail="Utilizator inexistent")
