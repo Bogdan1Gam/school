@@ -7,6 +7,7 @@ from email.mime.text import MIMEText
 from flask import Flask, request, jsonify
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.sql.functions import current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 
