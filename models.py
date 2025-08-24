@@ -18,3 +18,10 @@ class Judet(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     nume = Column(String, unique=True, nullable=False)
+
+class Locatie(Base):
+    __tablename__ = "locatii"
+
+    id = Column(Integer, primary_key=True, index=True)
+    nume = Column(String, unique=True, nullable=False)
+    adresa = Column(String, unique=True, nullable=False)

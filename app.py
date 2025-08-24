@@ -3,8 +3,8 @@ from fastapi import FastAPI, Depends, HTTPException, Header, Request
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from database import SessionLocal, engine, Base
-from models import User, Judet
-from schemas import UserCreate, UserLogin, UserOut
+from models import User, Judet, Locatie
+from schemas import UserCreate, UserLogin, UserOut, LocatieCreate, LocatieUpdate, LocatieOut
 from auth import create_jwt, decode_jwt, hash_password, verify_password
 from email_utils import send_email
 
@@ -94,3 +94,42 @@ def me(current_user: User = Depends(get_current_user)):
 def get_judete(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     judete = db.query(Judet).all()
     return {"judete": [j.nume for j in judete]}
+
+@app.post("/locatii", response_model=LocatieOut)
+def create_locatie(loc: LocatieCreate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    if db.query(Locatie).filter(Locatie.nume == loc.nume).first():
+        raise HTTPException(status_code=409, detail="Nume deja folosit")
+    if db.query(Locatie).filter(Locatie.adresa == loc.adresa).first():
+        raise HTTPException(status_code=409, detail="Adresa deja folosita")
+    new_loc = Locatie(nume=loc.nume, adresa=loc.adresa)
+    db.add(new_loc)
+    db.commit()
+    db.refresh(new_loc)
+    return new_loc
+
+@app.get("/locatii", response_model=list[LocatieOut])
+def get_locatii(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    locatii = db.query(Locatie).all()
+    return locatii
+
+@app.put("/locatii/{loc_id}", response_model=LocatieOut)
+def update_locatie(loc_id: int, loc: LocatieUpdate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    locatie = db.get(Locatie, loc_id)
+    if not locatie:
+        raise HTTPException(status_code=404, detail="Locatie inexistentă")
+    if loc.nume:
+        locatie.nume = loc.nume
+    if loc.adresa:
+        locatie.adresa = loc.adresa
+    db.commit()
+    db.refresh(locatie)
+    return locatie
+
+@app.delete("/locatii/{loc_id}")
+def delete_locatie(loc_id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    locatie = db.get(Locatie, loc_id)
+    if not locatie:
+        raise HTTPException(status_code=404, detail="Locatie inexistentă")
+    db.delete(locatie)
+    db.commit()
+    return {"message": "Locatie stearsa cu succes"}
