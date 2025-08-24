@@ -9,7 +9,7 @@ from auth import create_jwt, decode_jwt, hash_password, verify_password
 from email_utils import send_email
 
 Base.metadata.create_all(bind=engine)
-app = FastAPI(title="School API")
+app = FastAPI(title="Safe-Alternative")
 
 # ---------------- Helpers ----------------
 def get_db():
